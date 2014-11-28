@@ -56,7 +56,7 @@ if($trade_action_2=="tradebuy"){
 					$Trade_Message = 'Could, Trade matching not done. 1';
 					$trade_error=true;
 				} else {
-					$sql = "UPDATE ".$my_action."_orderbook SET processed = '4' WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
+					$sql = "UPDATE ".$my_action."_orderbook SET processed = '4' WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
 					//echo $sql."<br/>";
 					$Query_update = mysql_query($sql);
 					if(!$Query_update)
@@ -109,6 +109,8 @@ if($trade_action_2=="tradebuy"){
 								if($result == "success")
 								{
 									$handler=$user_session;
+									//$myhelp=$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2];
+									//echo $myhelp."<br/>";
 									$Query = "INSERT INTO ordersfilled (date, ip, username, trader, oid, action, want, amount, rate, total, processed, trade_id, trade_with) VALUES ('$date', '$ip', '$handler', '$trader', '$trade_id', '$my_action_2', '$BTC', '$amount', '$rate', '$totalamount', '$processed', '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."', '$BTCRYX');";
 									//echo $Query."<br/>";
 									if(!mysql_query($Query)) {
