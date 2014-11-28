@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
 echo '<div align="center" class="buy-sells">';
-$sql = "SELECT * FROM sell_orderbook WHERE want='BTC' and processed='1' and trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'";
+$sql = "SELECT * FROM sell_orderbook WHERE want='".$BTC."' and trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' and trade_with = '".$BTCRYX."' and processed='1'";
 $result = mysql_query($sql);
 $count = mysql_num_rows($result);
 if($count!=0) {
@@ -18,7 +18,7 @@ if($count!=0) {
                     </tr>';
       }
       $buy_subtotal = "0";
-      $Query = mysql_query("SELECT amount FROM sell_orderbook WHERE want='".$my_coins->coins_names_prefix[0]."' and trade_id='".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' and processed='1' ORDER BY rate ASC");
+      $Query = mysql_query("SELECT amount FROM sell_orderbook WHERE want='".$BTC."' and trade_id='".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' and trade_with = '".$BTCRYX."' and processed='1' ORDER BY rate ASC");
       while($Row = mysql_fetch_assoc($Query)) {
          $buy_amount = $Row['amount'];
          $buy_subtotal += $buy_amount;
@@ -28,11 +28,11 @@ if($count!=0) {
                <tr>
                   <td colspan="3" align="left" style="font-weight: bold; padding: 2px;" nowrap>Sell Orders</td>
                </tr><tr>
-                  <td colspan="3" align="right" style="padding: 2px;" nowrap>Total '.$my_coins->coins_names_prefix[1].': '.$cncvalue.'</td>
+                  <td colspan="3" align="right" style="padding: 2px;" nowrap>Total '.$BTC.': '.$cncvalue.'</td>
                </tr><tr>
-                  <td align="left" style="font-weight: bold; padding: 1px;" nowrap>Amount ('.$my_coins->coins_names_prefix[1].')</td>
-                  <td align="left" style="font-weight: bold; padding: 1px; padding-left: 10px;" nowrap>Rate ('.$my_coins->coins_names_prefix[0].')</td>
-                  <td align="left" style="font-weight: bold; padding: 1px; padding-left: 10px;" nowrap>Total ('.$my_coins->coins_names_prefix[0].')</td>
+                  <td align="left" style="font-weight: bold; padding: 1px;" nowrap>Amount ('.$BTCRYX.')</td>
+                  <td align="left" style="font-weight: bold; padding: 1px; padding-left: 10px;" nowrap>Rate ('.$BTC.')</td>
+                  <td align="left" style="font-weight: bold; padding: 1px; padding-left: 10px;" nowrap>Total ('.$BTC.')</td>
                </tr>'.$Sells_td.'</table>';
 } else {
    echo '<table style="width: 260px;">

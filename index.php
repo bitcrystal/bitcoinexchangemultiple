@@ -226,9 +226,9 @@ if($form_action=="register") {
    <script type="text/javascript">
     $(document).ready(function () {
         setInterval(function () {
-            $("#orderspast").load("ajax.php?id=orderspast-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
-            $("#buyorders").load("ajax.php?id=buyorders-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
-            $("#sellorders").load("ajax.php?id=sellorders-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
+            $("#orderspast").load("ajax.php?id=orderspast");
+            $("#buyorders").load("ajax.php?id=buyorders");
+            $("#sellorders").load("ajax.php?id=sellorders");
             $(".count").load("online.php");
             $("#stats").load("ajax.php?id=stats");
         }, 60000);

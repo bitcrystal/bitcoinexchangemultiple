@@ -1,6 +1,5 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
 CREATE TABLE IF NOT EXISTS `addresses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
@@ -16,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   `coin10` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+ALTER TABLE `addresses` ADD `trade_id` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `apis` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `apis` (
   `privkey` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+ALTER TABLE `apis` ADD `trade_id` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `balances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -40,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `balances` (
   `coin10` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+ALTER TABLE `balances` ADD `trade_id` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `buy_orderbook` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -54,6 +56,7 @@ CREATE TABLE IF NOT EXISTS `buy_orderbook` (
   `processed` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+ALTER TABLE `buy_orderbook` ADD `trade_id` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `ordersfilled` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -70,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `ordersfilled` (
   `processed` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+ALTER TABLE `ordersfilled` ADD `trade_id` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `sell_orderbook` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -84,6 +88,7 @@ CREATE TABLE IF NOT EXISTS `sell_orderbook` (
   `processed` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+ALTER TABLE `sell_orderbook` ADD `trade_id` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -96,6 +101,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `amount` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
+ALTER TABLE `transactions` ADD `trade_id` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `who_is_online` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -113,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `who_is_online` (
   UNIQUE KEY `ip` (`ip`),
   KEY `countrycode` (`countrycode`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
+ALTER TABLE `who_is_online` ADD `trade_id` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -120,6 +127,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `ip` varchar(30) NOT NULL,
   `username` varchar(65) NOT NULL,
   `password` varchar(300) NOT NULL,
-  `email` varchar(300) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+ALTER TABLE `users` ADD `email` varchar(300) NOT NULL;
+ALTER TABLE `users` ADD `trade_id` varchar(200) NOT NULL;

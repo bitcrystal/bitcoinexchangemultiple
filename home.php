@@ -25,14 +25,14 @@ $cancel_type = security($_GET['type']);
 $cancel_order = security($_GET['cancel']);
 if($cancel_order) {
    if($cancel_type=="sell") {
-      $Query = mysql_query("SELECT id, username, amount FROM sell_orderbook WHERE id='$cancel_order' and username='$user_session' ORDER BY rate ASC LIMIT 1");
+      $Query = mysql_query("SELECT id, username, amount FROM sell_orderbook WHERE id='$cancel_order' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' ORDER BY rate ASC LIMIT 1");
       while($Row = mysql_fetch_assoc($Query)) {
          $CURR_Selling_ID = $Row['id'];
          $CURR_Selling_Username = $Row['username'];
          $CURR_Selling_Amount = $Row['amount'];
       }
       if($user_session==$CURR_Selling_Username) {
-         $sql = "UPDATE sell_orderbook SET processed='3' WHERE id='$CURR_Selling_ID' and username='$user_session'";
+         $sql = "UPDATE sell_orderbook SET processed='3' WHERE id='$CURR_Selling_ID' and username='$user_session' and trade_id  = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."'";
          $result = mysql_query($sql);
          if($result) {
             $result = "";
@@ -51,7 +51,7 @@ if($cancel_order) {
       }
    } else {
       if($cancel_type=="buy") {
-         $Query = mysql_query("SELECT id, username, amount, rate FROM buy_orderbook WHERE id='$cancel_order' and username='$user_session' ORDER BY rate ASC LIMIT 1");
+         $Query = mysql_query("SELECT id, username, amount, rate FROM buy_orderbook WHERE id='$cancel_order' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' ORDER BY rate ASC LIMIT 1");
          while($Row = mysql_fetch_assoc($Query)) {
             $CURR_Selling_ID = $Row['id'];
             $CURR_Selling_Username = $Row['username'];
@@ -63,7 +63,7 @@ if($cancel_order) {
             $CURR_Selling_Amount = satoshitrim(satoshitize($CURR_Selling_Amount));
             $CURR_Selling_Amount = $Coin_A_Balance + $CURR_Selling_Amount;
             $CURR_Selling_Amount = satoshitrim(satoshitize($CURR_Selling_Amount));
-            $sql = "UPDATE buy_orderbook SET processed='3' WHERE id='$CURR_Selling_ID' and username='$user_session'";
+            $sql = "UPDATE buy_orderbook SET processed='3' WHERE id='$CURR_Selling_ID' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."'";
             $result = mysql_query($sql);
             if($result) {
                $result = plusfunds($user_session,$BTC,$CURR_Selling_Amount);
@@ -100,7 +100,7 @@ if($PST_Order_Action=="buy"){
             if($PST_Order_Sub_Total!=0) {
                if($Selling_Rate>=$PST_Order_Rate) {
                   if($Selling_Rate===$PST_Order_Rate) {
-                     $Query = mysql_query("SELECT id, username, amount, rate FROM sell_orderbook WHERE want='$BTC' and processed='1' ORDER BY rate DESC LIMIT 1");
+                     $Query = mysql_query("SELECT id, username, amount, rate FROM sell_orderbook WHERE want='$BTC' and processed='1' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' ORDER BY rate DESC LIMIT 1");
                      while($Row = mysql_fetch_assoc($Query)) {
                         $CURR_Selling_ID = $Row['id'];
                         $CURR_Selling_Username = $Row['username'];
@@ -167,7 +167,7 @@ if($PST_Order_Action=="sell") {
             if($PST_Order_Sub_Total!=0) {
                if($Buying_Rate>=$PST_Order_Rate) {
                   if($Buying_Rate===$PST_Order_Rate) {
-                     $Query = mysql_query("SELECT id, username, amount, rate FROM buy_orderbook WHERE want='$BTC' and processed='1' ORDER BY rate ASC LIMIT 1");
+                     $Query = mysql_query("SELECT id, username, amount, rate FROM buy_orderbook WHERE want='$BTC' and processed='1' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' ORDER BY rate ASC LIMIT 1");
                      while($Row = mysql_fetch_assoc($Query)) {
                         $CURR_Selling_ID = $Row['id'];
                         $CURR_Selling_Username = $Row['username'];
@@ -232,9 +232,9 @@ if($Trade_Message)
             $("#pending-deposits").load("ajax.php?id=pending-deposits");
          }, 30000);
         setInterval(function () {
-            $("#orderspast").load("ajax.php?id=orderspast-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
-            $("#buyorders").load("ajax.php?id=buyorders-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
-            $("#sellorders").load("ajax.php?id=sellorders-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
+            $("#orderspast").load("ajax.php?id=orderspast");
+            $("#buyorders").load("ajax.php?id=buyorders");
+            $("#sellorders").load("ajax.php?id=sellorders");
             $(".count").load("online.php");
             $("#stats").load("ajax.php?id=stats");
         }, 60000);

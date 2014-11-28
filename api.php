@@ -4,19 +4,19 @@ error_reporting(0);
 require_once'jsonRPCClient.php';
 require_once'auth.php';
 if($Logged_In===7) {
-   $sql = "SELECT * FROM apis WHERE username='$user_session'";
+   $sql = "SELECT * FROM apis WHERE username='$user_session' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'";
    $result = mysql_query($sql);
    $count = mysql_num_rows($result);
    if($count!=1) {
       $inns_apikey = apikeygen();    // generate a random api key, public key?
       $inns_privkey = apikeygen();   // generate a second random api key, private key?
-      if(!mysql_query("INSERT INTO apis (id,username,apikey,privkey) VALUES ('','$user_session','$inns_apikey','$inns_privkey')")){
+      if(!mysql_query("INSERT INTO apis (id,username,apikey,privkey,trade_id) VALUES ('','$user_session','$inns_apikey','$inns_privkey','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")){
          $return_error = "System error.";
       } else {
          $return_error = "Logged in.";
       }
    }
-   $Query = mysql_query("SELECT apikey, privkey FROM apis WHERE username='$user_session'");
+   $Query = mysql_query("SELECT apikey, privkey FROM apis WHERE username='$user_session' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'");
    while($Row = mysql_fetch_assoc($Query)) {
       $API_KEY = $Row['apikey'];      // the first api key generated, public key?
       $PRIV_KEY = $Row['privkey'];    // the second api key generated, private key?

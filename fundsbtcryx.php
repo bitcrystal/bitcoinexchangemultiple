@@ -23,7 +23,7 @@ if($withdraw_withdraw=="withdraw") {
                $result = plusfunds($FEEBEE,$my_coins->coins_names_prefix[2],$fee);        // add fee to feebee account
                $Bitcrystalxd_Balance = userbalance($user_session,$my_coins->coins_names_prefix[2]);
                $withdraw_message = '<a href="http://blockexplorer.bytecoin.in/tx/'.$Bitcrystalxd_Withdraw_From.'" target="_blank" style="color: #0B2161;">Withdraw was sent! Click here for more details.</a>';
-               if(!mysql_query("INSERT INTO transactions (id,date,username,action,coin,address,txid,amount) VALUES ('','$date','$user_session','withdraw','".$my_coins->coins_names_prefix[2]."','$withdraw_address','$Bitcrystalxd_Withdraw_From','$withdraw_amount')")){
+               if(!mysql_query("INSERT INTO transactions (id,date,username,action,coin,address,txid,amount,trade_id) VALUES ('','$date','$user_session','withdraw','".$my_coins->coins_names_prefix[2]."','$withdraw_address','$Bitcrystalxd_Withdraw_From','$withdraw_amount','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")){
                   $eereturn_error = "System error.";
                } else {
                   $eereturn_error = "Logged in.";

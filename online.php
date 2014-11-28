@@ -46,7 +46,7 @@ if(!mysql_num_rows($inDB)) {
    }
    mysql_query("UPDATE who_is_online SET dt=NOW() WHERE ip='$stringIp' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'");
 }
-// mysql_query("DELETE FROM tz_who_is_online WHERE dt<SUBTIME(NOW(),'0 0:10:0')");
+// mysql_query("DELETE FROM tz_who_is_online WHERE dt<SUBTIME(NOW(),'0 0:10:0') AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'");
 mysql_query("UPDATE who_is_online SET user='2' WHERE dt<SUBTIME(NOW(),'0 0:10:0') AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'");
 mysql_query("UPDATE who_is_online SET guest='2' WHERE dt<SUBTIME(NOW(),'0 0:10:0') AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'");
 mysql_query("UPDATE who_is_online SET bot='2' WHERE dt<SUBTIME(NOW(),'0 0:10:0') AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'");

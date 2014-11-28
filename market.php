@@ -56,7 +56,7 @@ if($trade_action_2=="tradebuy"){
 					$Trade_Message = 'Could, Trade matching not done. 1';
 					$trade_error=true;
 				} else {
-					$sql = "UPDATE ".$my_action."_orderbook SET processed = '4' WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' LIMIT 1;";
+					$sql = "UPDATE ".$my_action."_orderbook SET processed = '4' WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' LIMIT 1;";
 					//echo $sql."<br/>";
 					$Query_update = mysql_query($sql);
 					if(!$Query_update)
@@ -360,9 +360,9 @@ if($Trade_Message)
             $("#pending-deposits").load("ajax.php?id=pending-deposits");
          }, 30000);
         setInterval(function () {
-            $("#orderspast").load("ajax.php?id=orderspast-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
-            $("#buyorders").load("ajax.php?id=buyorders-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
-            $("#sellorders").load("ajax.php?id=sellorders-<?php $TMP_BTC=$BTC; if($BTC==$my_coins->coins_names_prefix[0]) { $TMP_BTC="BTC"; } else if($BTC==$my_coins->coins_names_prefix[1]) { $TMP_BTC="BTCRY"; } else { $TMP_BTC="BTCRYX";} echo $TMP_BTC; ?>");
+            $("#orderspast").load("ajax.php?id=orderspast");
+            $("#buyorders").load("ajax.php?id=buyorders");
+            $("#sellorders").load("ajax.php?id=sellorders");
             $(".count").load("online.php");
             $("#stats").load("ajax.php?id=stats");
         }, 60000);
