@@ -7,12 +7,12 @@ if($Logged_In!==7) {
 }
 $transactions_message_buy=array();
 $transactions_message_sell=array();
-$select = mysql_query("SELECT * FROM buy_orderbook WHERE username='".$_SESSION['user_session']."' AND processed = '1' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."';");
+$select = mysql_query("SELECT * FROM buy_orderbook WHERE username='".$_SESSION['user_session']."' AND want = '$BTC' AND processed = '1' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX';");
 if(!$select)
 {
 	$transactions_message_buy[0]="no buy orders";
 }
-$select2 = mysql_query("SELECT * FROM sell_orderbook WHERE username='".$_SESSION['user_session']."' AND processed = '1' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."';");
+$select2 = mysql_query("SELECT * FROM sell_orderbook WHERE username='".$_SESSION['user_session']."' AND want = '$BTC' AND processed = '1' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX';");
 if(!$select2)
 {
 	$transactions_message_sell[0]="no sell orders";

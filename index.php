@@ -16,8 +16,8 @@ if($coin_selecter) {
    if($coin_selecter==$my_coins->coins_names_prefix[2]) { $_SESSION['trade_coin'] = $my_coins->coins_names_prefix[2]; }
    header("Location: index.php");
 }
-$Buying_Rate = buyrate($BTCRYX);
-$Selling_Rate = sellrate($BTCRYX);
+$Buying_Rate = buyrate($BTC,$BTCRYX);
+$Selling_Rate = sellrate($BTC,$BTCRYX);
 if(!$Buying_Rate) { $Buying_Rate = '0'; }
 if(!$Selling_Rate) { $Selling_Rate = '0'; }
 

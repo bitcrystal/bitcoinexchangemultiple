@@ -51,16 +51,16 @@ function userbalance($function_user,$function_coin) {
    return $function_return;
 }
 
-function buyrate($function_coin) {
-   $function_query = mysql_query("SELECT rate FROM buy_orderbook WHERE want='$function_coin' and processed='1' and trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."' ORDER BY rate DESC LIMIT 1");
+function buyrate($function_coin, $function_coin2) {
+   $function_query = mysql_query("SELECT rate FROM buy_orderbook WHERE want='$function_coin' and processed='1' and trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."' AND trade_with = '$function_coin2' ORDER BY rate DESC LIMIT 1");
    while($function_row = mysql_fetch_assoc($function_query)) {
       $function_return = $function_row['rate'];
    }
    return $function_return;
 }
 
-function sellrate($function_coin) {
-   $function_query = mysql_query("SELECT rate FROM sell_orderbook WHERE want='$function_coin' and processed='1' and trade_id = '".$GLOBALS{'cp0']."_".$GLOBALS{'cp1']."_".$GLOBALS{'cp2']."' ORDER BY rate ASC LIMIT 1");
+function sellrate($function_coin,$function_coin2) {
+   $function_query = mysql_query("SELECT rate FROM sell_orderbook WHERE want='$function_coin' and processed='1' and trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."' AND trade_with = '$function_coin2' ORDER BY rate ASC LIMIT 1");
    while($function_row = mysql_fetch_assoc($function_query)) {
       $function_return = $function_row['rate'];
    }
@@ -71,9 +71,9 @@ function plusfunds($function_user,$function_coin,$function_amount) {
    $function_user_balance = userbalance($function_user,$function_coin);
    $function_balance = $function_user_balance + $function_amount;
    $function_balance = satoshitrim(satoshitize($function_balance));
-   if($function_coin==$GLOBALS['cp0']) { $sql = "UPDATE balances SET coin1='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS{'cp0']."_".$GLOBALS{'cp1']."_".$GLOBALS{'cp2']."'"; }
-   if($function_coin==$GLOBALS['cp2']) { $sql = "UPDATE balances SET coin2='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS{'cp0']."_".$GLOBALS{'cp1']."_".$GLOBALS{'cp2']."'"; }
-   if($function_coin==$GLOBALS['cp1']) { $sql = "UPDATE balances SET coin3='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS{'cp0']."_".$GLOBALS{'cp1']."_".$GLOBALS{'cp2']."'"; }
+   if($function_coin==$GLOBALS['cp0']) { $sql = "UPDATE balances SET coin1='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."'"; }
+   if($function_coin==$GLOBALS['cp2']) { $sql = "UPDATE balances SET coin2='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."'"; }
+   if($function_coin==$GLOBALS['cp1']) { $sql = "UPDATE balances SET coin3='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."'"; }
    $result = mysql_query($sql);
    if($result) {
       $function_return = "success";
@@ -87,9 +87,9 @@ function minusfunds($function_user,$function_coin,$function_amount) {
    $function_user_balance = userbalance($function_user,$function_coin);
    $function_balance = $function_user_balance - $function_amount;
    $function_balance = satoshitrim(satoshitize($function_balance));
-   if($function_coin==$GLOBALS['cp0']) { $sql = "UPDATE balances SET coin1='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS['cp0']."_".$GLOBALS{'cp1']."_".$GLOBALS{'cp2']."'"; }
-   if($function_coin==$GLOBALS['cp2']) { $sql = "UPDATE balances SET coin2='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS['cp0']."_".$GLOBALS{'cp1']."_".$GLOBALS{'cp2']."'"; }
-   if($function_coin==$GLOBALS['cp1']) { $sql = "UPDATE balances SET coin3='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS{'cp0']."_".$GLOBALS{'cp1']."_".$GLOBALS{'cp2']."'"; }
+   if($function_coin==$GLOBALS['cp0']) { $sql = "UPDATE balances SET coin1='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."'"; }
+   if($function_coin==$GLOBALS['cp2']) { $sql = "UPDATE balances SET coin2='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."'"; }
+   if($function_coin==$GLOBALS['cp1']) { $sql = "UPDATE balances SET coin3='$function_balance' WHERE username='$function_user' AND trade_id = '".$GLOBALS['cp0']."_".$GLOBALS['cp1']."_".$GLOBALS['cp2']."'"; }
    $result = mysql_query($sql);
    if($result) {
       $function_return = "success";

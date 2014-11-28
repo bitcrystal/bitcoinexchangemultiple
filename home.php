@@ -14,8 +14,8 @@ if($coin_selecter) {
 }
 $Coin_A_Balance = userbalance($user_session,$BTC);
 $Coin_B_Balance = userbalance($user_session,$BTCRYX);
-$Buying_Rate = buyrate($BTCRYX);
-$Selling_Rate = sellrate($BTCRYX);
+$Buying_Rate = buyrate($BTC,$BTCRYX);
+$Selling_Rate = sellrate($BTC,$BTCRYX);
 if(!$Buying_Rate) { $Buying_Rate = '0'; }
 if(!$Selling_Rate) { $Selling_Rate = '0'; }
 $Bitcoin_Can_Buy = $Coin_A_Balance / $Selling_Rate;
@@ -25,14 +25,14 @@ $cancel_type = security($_GET['type']);
 $cancel_order = security($_GET['cancel']);
 if($cancel_order) {
    if($cancel_type=="sell") {
-      $Query = mysql_query("SELECT id, username, amount FROM sell_orderbook WHERE id='$cancel_order' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' ORDER BY rate ASC LIMIT 1");
+      $Query = mysql_query("SELECT id, username, amount FROM sell_orderbook WHERE id='$cancel_order' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' and trade_with='$BTCRYX' ORDER BY rate ASC LIMIT 1");
       while($Row = mysql_fetch_assoc($Query)) {
          $CURR_Selling_ID = $Row['id'];
          $CURR_Selling_Username = $Row['username'];
          $CURR_Selling_Amount = $Row['amount'];
       }
       if($user_session==$CURR_Selling_Username) {
-         $sql = "UPDATE sell_orderbook SET processed='3' WHERE id='$CURR_Selling_ID' and username='$user_session' and trade_id  = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."'";
+         $sql = "UPDATE sell_orderbook SET processed='3' WHERE id='$CURR_Selling_ID' and username='$user_session' and trade_id  = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' AND trade_with = '$BTCRYX'";
          $result = mysql_query($sql);
          if($result) {
             $result = "";
@@ -51,7 +51,7 @@ if($cancel_order) {
       }
    } else {
       if($cancel_type=="buy") {
-         $Query = mysql_query("SELECT id, username, amount, rate FROM buy_orderbook WHERE id='$cancel_order' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' ORDER BY rate ASC LIMIT 1");
+         $Query = mysql_query("SELECT id, username, amount, rate FROM buy_orderbook WHERE id='$cancel_order' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' AND trade_with = '$BTCRYX' ORDER BY rate ASC LIMIT 1");
          while($Row = mysql_fetch_assoc($Query)) {
             $CURR_Selling_ID = $Row['id'];
             $CURR_Selling_Username = $Row['username'];
@@ -63,7 +63,7 @@ if($cancel_order) {
             $CURR_Selling_Amount = satoshitrim(satoshitize($CURR_Selling_Amount));
             $CURR_Selling_Amount = $Coin_A_Balance + $CURR_Selling_Amount;
             $CURR_Selling_Amount = satoshitrim(satoshitize($CURR_Selling_Amount));
-            $sql = "UPDATE buy_orderbook SET processed='3' WHERE id='$CURR_Selling_ID' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."'";
+            $sql = "UPDATE buy_orderbook SET processed='3' WHERE id='$CURR_Selling_ID' and username='$user_session' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' AND trade_with = '$BTCRYX'";
             $result = mysql_query($sql);
             if($result) {
                $result = plusfunds($user_session,$BTC,$CURR_Selling_Amount);
@@ -100,7 +100,7 @@ if($PST_Order_Action=="buy"){
             if($PST_Order_Sub_Total!=0) {
                if($Selling_Rate>=$PST_Order_Rate) {
                   if($Selling_Rate===$PST_Order_Rate) {
-                     $Query = mysql_query("SELECT id, username, amount, rate FROM sell_orderbook WHERE want='$BTC' and processed='1' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' ORDER BY rate DESC LIMIT 1");
+                     $Query = mysql_query("SELECT id, username, amount, rate FROM sell_orderbook WHERE want='$BTC' and processed='1' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' AND trade_with = '$BTCRYX' ORDER BY rate DESC LIMIT 1");
                      while($Row = mysql_fetch_assoc($Query)) {
                         $CURR_Selling_ID = $Row['id'];
                         $CURR_Selling_Username = $Row['username'];
@@ -127,7 +127,7 @@ if($PST_Order_Action=="buy"){
                      $Trade_Message = 'Trade matching not done..';
                   }
                } else {
-                  if(!mysql_query("INSERT INTO buy_orderbook (id, date, ip, username, action, want, initial_amount, amount, rate, processed, trade_id) VALUES ('','$date','$ip','$user_session','buy','$BTC','$PST_Order_Amount','$PST_Order_Amount','$PST_Order_Rate','1','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")) {
+                  if(!mysql_query("INSERT INTO buy_orderbook (id, date, ip, username, action, want, initial_amount, amount, rate, processed, trade_id, trade_with) VALUES ('','$date','$ip','$user_session','buy','$BTC','$PST_Order_Amount','$PST_Order_Amount','$PST_Order_Rate','1','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."','$BTCRYX')")) {
                      $Trade_Message = "System error.";
                   } else {
                      $result = minusfunds($user_session,$BTC,$PST_Order_Sub_Total);
@@ -167,7 +167,7 @@ if($PST_Order_Action=="sell") {
             if($PST_Order_Sub_Total!=0) {
                if($Buying_Rate>=$PST_Order_Rate) {
                   if($Buying_Rate===$PST_Order_Rate) {
-                     $Query = mysql_query("SELECT id, username, amount, rate FROM buy_orderbook WHERE want='$BTC' and processed='1' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' ORDER BY rate ASC LIMIT 1");
+                     $Query = mysql_query("SELECT id, username, amount, rate FROM buy_orderbook WHERE want='$BTC' and processed='1' and trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' AND trade_with = '$BTCRYX' ORDER BY rate ASC LIMIT 1");
                      while($Row = mysql_fetch_assoc($Query)) {
                         $CURR_Selling_ID = $Row['id'];
                         $CURR_Selling_Username = $Row['username'];
@@ -185,7 +185,7 @@ if($PST_Order_Action=="sell") {
                      $Trade_Message = 'Trade matching not done.';
                   }
                } else {
-                  if(!mysql_query("INSERT INTO sell_orderbook (id, date, ip, username, action, want, initial_amount, amount, rate, processed, trade_id) VALUES ('','$date','$ip','$user_session','sell','$BTC','$PST_Order_Amount','$PST_Order_Amount','$PST_Order_Rate','1','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")) {
+                  if(!mysql_query("INSERT INTO sell_orderbook (id, date, ip, username, action, want, initial_amount, amount, rate, processed, trade_id, trade_with) VALUES ('','$date','$ip','$user_session','sell','$BTC','$PST_Order_Amount','$PST_Order_Amount','$PST_Order_Rate','1','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."','$BTCRYX')")) {
                      $Trade_Message = "System error.";
                   } else {
 					 $result = minusfunds($user_session,$BTCRYX,$PST_Order_Amount);

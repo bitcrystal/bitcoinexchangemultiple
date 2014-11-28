@@ -48,7 +48,7 @@ if($trade_action_2=="tradebuy"){
 			}
 			if(!$trade_error)
 			{
-				$sql = "SELECT * FROM ".$my_action."_orderbook WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' LIMIT 1";
+				$sql = "SELECT * FROM ".$my_action."_orderbook WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_with = '$BTCRYX' LIMIT 1";
 				//echo $sql."<br/>";
 				$Query = mysql_query($sql);
 				if(!$Query)
@@ -56,7 +56,7 @@ if($trade_action_2=="tradebuy"){
 					$Trade_Message = 'Could, Trade matching not done. 1';
 					$trade_error=true;
 				} else {
-					$sql = "UPDATE ".$my_action."_orderbook SET processed = '4' WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' LIMIT 1;";
+					$sql = "UPDATE ".$my_action."_orderbook SET processed = '4' WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$coins_names_prefix[0]."_".$coins_names_prefix[1]."_".$coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
 					//echo $sql."<br/>";
 					$Query_update = mysql_query($sql);
 					if(!$Query_update)
@@ -109,7 +109,7 @@ if($trade_action_2=="tradebuy"){
 								if($result == "success")
 								{
 									$handler=$user_session;
-									$Query = "INSERT INTO ordersfilled (date, ip, username, trader, oid, action, want, amount, rate, total, processed, trade_id) VALUES ('$date', '$ip', '$handler', '$trader', '$trade_id', '$my_action_2', '$BTC', '$amount', '$rate', '$totalamount', '$processed', '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."');";
+									$Query = "INSERT INTO ordersfilled (date, ip, username, trader, oid, action, want, amount, rate, total, processed, trade_id, trade_with) VALUES ('$date', '$ip', '$handler', '$trader', '$trade_id', '$my_action_2', '$BTC', '$amount', '$rate', '$totalamount', '$processed', '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."', '$BTCRYX');";
 									//echo $Query."<br/>";
 									if(!mysql_query($Query)) {
 										$Trade_Message = 'Could, Trade matching not done. 5';
@@ -142,11 +142,11 @@ if($trade_action_2=="tradebuy"){
 	}
 	if($trade_error)
 	{
-		$sql = "UPDATE ".$my_action."_orderbook SET processed = '$processed' WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '4' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' LIMIT 1;";
+		$sql = "UPDATE ".$my_action."_orderbook SET processed = '$processed' WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '4' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
 		//echo $sql."<br/>";
 		mysql_query($sql);
 	} else {
-		$sql = "DELETE FROM ".$my_action."_orderbook WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '4' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' LIMIT 1;";
+		$sql = "DELETE FROM ".$my_action."_orderbook WHERE username = '$trader' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '4' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
 		//echo $sql."<br/>";
 		mysql_query($sql);
 	}
@@ -161,7 +161,7 @@ if($trade_action_2=="tradesell"){
 	if($trade_amount) {
 		if($trade_rate) {
 			$trade_error=false;
-			$sql = "SELECT * FROM ".$my_action."_orderbook WHERE username = '$buyer' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' LIMIT 1;";
+			$sql = "SELECT * FROM ".$my_action."_orderbook WHERE username = '$buyer' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
 			//echo $sql."<br/>";
 			$Query = mysql_query($sql);
             if(!$Query)
@@ -169,7 +169,7 @@ if($trade_action_2=="tradesell"){
 				 $Trade_Message = 'Could, Trade matching not done. 1';
 				 $trade_error=true;
 			} else {
-				$sql = "UPDATE ".$my_action."_orderbook SET processed = '4' WHERE username = '$buyer' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' LIMIT 1;";
+				$sql = "UPDATE ".$my_action."_orderbook SET processed = '4' WHERE username = '$buyer' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '$processed' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
 				//echo $sql."<br/>";
 				$Query_update = mysql_query($sql);
 				if(!$Query_update)
@@ -232,7 +232,7 @@ if($trade_action_2=="tradesell"){
 								if($result == "success")
 								{
 									$handler=$buyer;
-									$Query = "INSERT INTO ordersfilled (date, ip, username, trader, oid, action, want, amount, rate, total, processed, trade_id) VALUES ('$date', '$ip', '$handler', '$trader', '$trade_id', '$my_action_2', '$BTC', '$amount', '$rate', '$totalamount', '$processed', '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."');";
+									$Query = "INSERT INTO ordersfilled (date, ip, username, trader, oid, action, want, amount, rate, total, processed, trade_id, trade_with) VALUES ('$date', '$ip', '$handler', '$trader', '$trade_id', '$my_action_2', '$BTC', '$amount', '$rate', '$totalamount', '$processed', '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."', '$BTCRYX');";
 									//echo $Query."<br/>";
 									if(!mysql_query($Query)) {
 										$Trade_Message = 'Could, Trade matching not done. 6';
@@ -265,11 +265,11 @@ if($trade_action_2=="tradesell"){
 	}
 	if($trade_error)
 	{
-		$sql = "UPDATE ".$my_action."_orderbook SET processed = '$processed' WHERE username = '$buyer' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '4' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' LIMIT 1;";
+		$sql = "UPDATE ".$my_action."_orderbook SET processed = '$processed' WHERE username = '$buyer' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '4' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
 		//echo $sql."<br/>";
 		mysql_query($sql);
 	} else {
-		$sql = "DELETE FROM ".$my_action."_orderbook WHERE username = '$buyer' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '4' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' LIMIT 1;";
+		$sql = "DELETE FROM ".$my_action."_orderbook WHERE username = '$buyer' AND want='$BTC' AND amount = '$trade_amount' AND action='$my_action' AND processed = '4' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX' LIMIT 1;";
 		//echo $sql."<br/>";
 		mysql_query($sql);
 	}
@@ -293,7 +293,7 @@ $rate = false;
 $sell_orderbook["message"]="";
 $buy_orderbook["message"]="";
 
-$Query = mysql_query("SELECT * FROM sell_orderbook WHERE username != '$user_session' AND want='$BTC' AND processed = '1' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."';");
+$Query = mysql_query("SELECT * FROM sell_orderbook WHERE username != '$user_session' AND want='$BTC' AND processed = '1' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX';");
 if(!$Query)
 {
 	$sell_orderbook["message"]="No buy orders for you!";
@@ -318,7 +318,7 @@ while($Row = mysql_fetch_assoc($Query)) {
 }
 $count_sell_orderbook = $i;
 
-$Query = mysql_query("SELECT * FROM buy_orderbook WHERE username != '$user_session' AND want='$BTC' AND processed = '1' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."';");
+$Query = mysql_query("SELECT * FROM buy_orderbook WHERE username != '$user_session' AND want='$BTC' AND processed = '1' AND trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."' AND trade_with = '$BTCRYX';");
 if(!$Query)
 {
 	$buy_orderbook["message"]="No sell orders for you!";

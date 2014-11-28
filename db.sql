@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `buy_orderbook` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 ALTER TABLE `buy_orderbook` ADD `trade_id` varchar(200) NOT NULL;
+ALTER TABLE `buy_orderbook` ADD `trade_with` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `ordersfilled` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -74,6 +75,7 @@ CREATE TABLE IF NOT EXISTS `ordersfilled` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 ALTER TABLE `ordersfilled` ADD `trade_id` varchar(200) NOT NULL;
+ALTER TABLE `ordersfilled` ADD `trade_with` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `sell_orderbook` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -89,6 +91,7 @@ CREATE TABLE IF NOT EXISTS `sell_orderbook` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 ALTER TABLE `sell_orderbook` ADD `trade_id` varchar(200) NOT NULL;
+ALTER TABLE `sell_orderbook` ADD `trade_with` varchar(200) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS `transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
