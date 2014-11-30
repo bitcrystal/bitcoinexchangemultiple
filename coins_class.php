@@ -18,9 +18,13 @@ class w_coins {
 	private $current_trade_to_coin_prefix;
 	private $current_trade_to_coin_name;
 	public $trade_coins;
+	private $instance_id;
+	private $select_instance_id;
 	private static $SINGLETON = NULL;
 	
 	private function __construct() {
+		$instance_id = 0;
+		$select_instance_id = 0;
 		$this->my_w = new w_coins_settings();
 		$this->coins = array();
 		$this->coins_names = array();
@@ -403,6 +407,367 @@ class w_coins {
 			$this->set_coins_daemon($name, $rpc_user, $rpc_pass, $rpc_host, $rpc_port);
 		}
 		$this->is_enabled_default_coins=true;
+	}
+	
+	public function outputCoinButtonLinks($website)
+	{
+		for($i=0;$i < $this->coins_count; $i+=3)
+		{
+			if($i/3>0)
+					$iid = '&iid=' . $i/3;
+				else
+					$iid = "";
+			echo "<td><div class=\"coin-button\"><a href=\"".$website.".php?c=".$this->coins_names_prefix[0+$i].$iid."\" class=\"coin-link\">".$this->coins_names_prefix[1+$i]."/".$this->coins_names_prefix[0+$i]."</a></div></td>";
+			echo "<td style=\"padding-left: 20px;\"><div class=\"coin-button\"><a href=\"home.php?c=".$this->coins_names_prefix[2+$i].$iid."\" class=\"coin-link\">".$this->coins_names_prefix[1+$i]."/".$this->coins_names_prefix[2+$i]."</a></div></td>";
+		}
+	}
+	
+	public function coinSelecter($coin_selecter)
+	{
+		if(!$coin_selecter)
+			return false;
+		$trade_coin = false;
+		for($i=0;$i < $this->coins_count; $i+=3)
+		{
+			if($coin_selecter==$this->coins_names_prefix[0+$i]) 
+			{ 
+				$trade_coin = $this->coins_names_prefix[0+$i];
+				$this->instance_id=$i/3;
+				return $trade_coin;
+			}
+			if($coin_selecter==$this->coins_names_prefix[2+$i]) 
+			{ 
+				$trade_coin = $this->coins_names_prefix[2+$i];
+				$this->instance_id=$i/3;
+				return $trade_coin;
+			}
+				
+		}
+		return $trade_coin;
+	}
+	
+	public function coinSelecterSelect($coin_selecter)
+	{
+		$trade_coin = $this->coinSelecter($coin_selecter);
+		if(!$trade_coin)
+			return false;
+		for($i=0;$i < $this->coins_count; $i+=3)
+		{
+			if($trade_coin == $this->coins_names_prefix[0+$i])
+			{
+				$this->set_current_from_trade_coin_prefix_and_name($this->coins_names_prefix[0+$i], $this->coins_names[0+$i]);
+				$this->set_current_to_trade_coin_prefix_and_name($this->coins_names_prefix[1+$i], $this->coins_names[1+$i]);
+			}
+			if($trade_coin == $this->coins_names_prefix[2+$i])
+			{
+				$this->set_current_from_trade_coin_prefix_and_name($this->coins_names_prefix[2+$i], $this->coins_names[2+$i]);
+				$this->set_current_to_trade_coin_prefix_and_name($this->coins_names_prefix[1+$i], $this->coins_names[1+$i]);
+			}	
+		}
+		return $trade_coin;
+	}
+	
+	public function outputBalances($user_session)
+	{
+		if(!$user_session) {
+			echo '<b>Finances:</b><p></p>
+			<table style="width: 100%;">
+			<tr>';
+			for($i=0;$i < $this->coins_count; $i+=3)
+			{
+				if($i/3>0)
+					$iid = '?iid=' . $i/3;
+				else
+					$iid = "";
+				echo'
+					<td align="right" style="padding-left: 5px;" nowrap><a href="fundsbtc.php'.$iid.'">'.$this->coins_names_prefix[0+$i].'</a></td>
+					<td align="right" style="padding-left: 5px;" nowrap><span id="balance-btc">?</span></td>
+					<td align="right" style="padding-left: 5px;" nowrap><a href="fundsbtcry.php'.$iid.'">'.$this->coins_names_prefix[1+$i].'</a></td>
+					</tr><tr>
+						<td align="right" style="padding-left: 5px;" nowrap><span id="balance-btcry">?</span></td>
+					</tr><tr>
+						<td align="right" style="padding-left: 5px;" nowrap><a href="fundsbtcryx.php'.$iid.'">'.$this->coins_names_prefix[2+$i].'</a></td>
+						<td align="right" style="padding-left: 5px;" nowrap><span id="balance-btcryx">?</span></td>
+					';
+			}
+			echo'</tr>
+				</table>';
+		} else {
+			echo '<b>Finances:</b><p></p>
+				<table style="width: 100%;">
+				<tr>';
+			for($i=0;$i < $this->coins_count; $i+=3)
+			{
+				echo'
+					<td align="right" style="padding-left: 5px;" nowrap><a href="fundsbtc.php'.$iid.'">'.$this->coins_names_prefix[0+$i].'</a></td>
+					<td align="right" style="padding-left: 5px;" nowrap><span id="balance-btc">'.userbalance($user_session,$this->coins_names_prefix[0+$i]).'</span></td>
+					</tr><tr>
+						<td align="right" style="padding-left: 5px;" nowrap><a href="fundsbtcry.php'.$iid.'">'.$this->coins_names_prefix[1+$i].'</a></td>
+						<td align="right" style="padding-left: 5px;" nowrap><span id="balance-btcry">'.userbalance($user_session,$this->coins_names_prefix[1+$i]).'</span></td>
+					</tr><tr>
+						<td align="right" style="padding-left: 5px;" nowrap><a href="fundsbtcryx.php'.$iid.'">'.$this->coins_names_prefix[2+$i].'</a></td>
+						<td align="right" style="padding-left: 5px;" nowrap><span id="balance-btcryx">'.userbalance($user_session,$this->coins_names_prefix[2+$i]).'</span></td>
+					';
+			}
+				echo'
+				</tr>
+				</table>
+				';
+		}
+	}
+	
+	public function outputFooter($website)
+	{
+		echo'<b>Trade Sections:</b> ';
+		$link = "";
+		for($i=0;$i < $this->coins_count; $i+=3)
+		{
+			if($i!=0)
+				echo', ';
+			if($i/3>0)
+					$iid = '&iid=' . $i/3;
+				else
+					$iid = "";
+			echo'<a href="'.$website.'.php?c='.$this->coins_names_prefix[2+$i].$iid.'">'.$this->coins_names_prefix[1+$i].'/'.$this->coins_names_prefix[2+$i].'</a>, <a href="home.php?c='.$this->coins_names_prefix[0+$i].$iid.'">'.$this->coins_names_prefix[1+$i].'/'.$this->coins_names_prefix[0+$i].'</a>';
+		}
+	}
+	
+	public function getInstanceId()
+	{
+		return $this->instance_id;
+	}
+	
+	public function getCoinsInstanceId()
+	{
+		return $this->instance_id*3;
+	}
+	
+	public function getSelectInstanceId()
+	{
+		return $this->select_instance_id/3;
+	}
+	
+	public function setSelectInstanceId($id)
+	{
+		$this->select_instance_id=$id/3;
+	}
+	
+	public function getCoinsSelectInstanceId()
+	{
+		return $this->select_instance_id*3;
+	}
+	
+	public function getBitcoindDaemons()
+	{
+		$array = array();
+		$count = 0;
+		for($i=0,$j=0;$i < $this->coins_count; $i++)
+		{
+			$r = $i%3;
+			if($r==0||$r==3)
+			{
+				$array[$j] = array();
+				$array[$j]["name"] = $this->coins_names[$i];
+				$array[$j]["prefix"] = $this->coins_names_prefix[$i];
+				$array[$j]["daemon"] = $this->coins[$this->coins_names[$i]]["daemon"];
+				$j++;
+			}
+		}
+		$count = count($array);
+		return array($array, $count);
+	}
+	
+	public function getBitcrystaldDaemons()
+	{
+		$array = array();
+		$count = 0;
+		for($i=0,$j=0;$i < $this->coins_count; $i++)
+		{
+			$r = $i%3;
+			if($r==1)
+			{
+				$array[$j] = array();
+				$array[$j]["name"] = $this->coins_names[$i];
+				$array[$j]["prefix"] = $this->coins_names_prefix[$i];
+				$array[$j]["daemon"] = $this->coins[$this->coins_names[$i]]["daemon"];
+				$j++;
+			}
+		}
+		$count = count($array);
+		return array($array, $count);
+	}
+	
+	public function getBitcrystalxdDaemons()
+	{
+		$array = array();
+		$count = 0;
+		for($i=0,$j=0;$i < $this->coins_count; $i++)
+		{
+			$r = $i%3;
+			if($r==2)
+			{
+				$array[$j] = array();
+				$array[$j]["name"] = $this->coins_names[$i];
+				$array[$j]["prefix"] = $this->coins_names_prefix[$i];
+				$array[$j]["daemon"] = $this->coins[$this->coins_names[$i]]["daemon"];
+				$j++;
+			}
+		}
+		$count = count($array);
+		return array($array, $count);
+	}
+	
+	public function update($user_session, $wallet_id)
+	{
+		if(!$user_session)
+			return false;
+		$rv=$this->getBitcoindDaemons();
+		$Bitcoind = $rv[0];
+		$rv=$this->getBitcrystaldDaemons();
+		$Bitcrystald = $rv[0];
+		$rv=$this->getBitcrystalxdDaemons();
+		$Bitcrystalxd = $rv[0];
+		$count_daemons = $rv[1];
+		$Bitcoind_Account_Address=array();
+		$Bitcrystald_Account_Address=array();
+		$Bitcrystalxd_Account_Address=array();
+		$string="";
+		$i=0;
+		for(;$i<$count_daemons;$i++)
+		{
+			$Bitcoind_Account_Address[$i] = $Bitcoind[$i]["daemon"]->getaccountaddress($wallet_id);
+			$Bitcrystald_Account_Address[$i] = $Bitcrystald[$i]["daemon"]->getaccountaddress($wallet_id);
+			$Bitcrystalxd_Account_Address[$i] = $Bitcrystalxd[$i]["daemon"]->getaccountaddress($wallet_id);
+			if($i!=0&&$i+1<$count_daemons)
+				$string = $string .",";
+			$string=$string . "'".$Bitcoind_Account_Address[$i]."','".$Bitcrystald_Account_Address[$i]."','".$Bitcrystalxd_Account_Address[$i]."'";
+		}
+	    if($i<10)
+			$string = $string . ",";
+		for(;$i<10;$i++)
+		{
+			$string = $string . "'0'";
+			if($i+1<10)
+				$string = $string .",";
+		}
+		$SQL = "SELECT * FROM balances WHERE username='$user_session' and trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'";
+		$result = mysql_query($SQL);
+		$num_rows = mysql_num_rows($result);
+		if($num_rows!=1) {
+			if(!mysql_query("INSERT INTO balances (id,username,coin1,coin2,coin3,coin4,coin5,coin6,coin7,coin8,coin9,coin10,trade_id) VALUES ('','$user_session','0','0','0','0','0','0','0','0','0','0','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")) {
+				die("Server error");
+			} else {
+				$r_system_action = "success";
+			}
+		}
+		$SQL = "SELECT * FROM addresses WHERE username='$user_session' and trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'";
+		$result = mysql_query($SQL);
+		$num_rows = mysql_num_rows($result);
+		if($num_rows!=1) {
+			if(!mysql_query("INSERT INTO addresses (id,username,coin1,coin2,coin3,coin4,coin5,coin6,coin7,coin8,coin9,coin10,trade_id) VALUES ('','$user_session',".$string.",'".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")) {
+				die("Server error");
+			} else {
+				$r_system_action = "success";
+			}
+		}
+
+		for($i=0;$i<$count_daemons;$i++)
+		{
+			$Bitcoind_List_Transactions = $Bitcoind[$i]["daemon"]->listtransactions($wallet_id,50);
+   
+			foreach($Bitcoind_List_Transactions as $Bitcoind_List_Transaction) {
+				if($Bitcoind_List_Transaction['category']=="receive") {
+					if(6<=$Bitcoind_List_Transaction['confirmations']) {
+						$DEPOSIT_tx_type = 'deposit';
+						$DEPOSIT_coin_type = $Bitcoind[$i]["prefix"];
+						$DEPOSIT_date = date('n/j/y h:i a',$Bitcoind_List_Transaction['time']);
+						$DEPOSIT_address = $Bitcoind_List_Transaction['address'];
+						$DEPOSIT_amount = abs($Bitcoind_List_Transaction['amount']);
+						$DEPOSIT_txid = $Bitcoind_List_Transaction['txid'];
+						$SQL = "SELECT * FROM transactions WHERE coin='$DEPOSIT_coin_type' and txid='$DEPOSIT_txid' and trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'";
+						$result = mysql_query($SQL);
+						$num_rows = mysql_num_rows($result);
+						if($num_rows!=1) {
+							if(!mysql_query("INSERT INTO transactions (id,date,username,action,coin,address,txid,amount,trade_id) VALUES ('','$DEPOSIT_date','$user_session','$DEPOSIT_tx_type','$DEPOSIT_coin_type','$DEPOSIT_address','$DEPOSIT_txid','$DEPOSIT_amount','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")) {
+								die("Server error");
+							} else {
+								$result = plusfunds($user_session,$Bitcoind[$i]["prefix"],$DEPOSIT_amount);
+								if($result) {
+									$r_system_action = "success";
+								} else {
+									die("Server error");
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			$Bitcrystald_List_Transactions = $Bitcrystald[$i]["daemon"]->listtransactions($wallet_id,50);
+   
+			foreach($Bitcrystald_List_Transactions as $Bitcrystald_List_Transaction) {
+				if($Bitcrystald_List_Transaction['category']=="receive") {
+					if(6<=$Bitcrystald_List_Transaction['confirmations']) {
+						$DEPOSIT_tx_type = 'deposit';
+						$DEPOSIT_coin_type = $Bitcrystald[$i]["prefix"];
+						$DEPOSIT_date = date('n/j/y h:i a',$Bitcrystald_List_Transaction['time']);
+						$DEPOSIT_address = $Bitcrystald_List_Transaction['address'];
+						$DEPOSIT_amount = abs($Bitcrystald_List_Transaction['amount']);
+						$DEPOSIT_txid = $Bitcrystald_List_Transaction['txid'];
+						$SQL = "SELECT * FROM transactions WHERE coin='$DEPOSIT_coin_type' and txid='$DEPOSIT_txid' and trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'";
+						$result = mysql_query($SQL);
+						$num_rows = mysql_num_rows($result);
+						if($num_rows!=1) {
+							if(!mysql_query("INSERT INTO transactions (id,date,username,action,coin,address,txid,amount,trade_id) VALUES ('','$DEPOSIT_date','$user_session','$DEPOSIT_tx_type','$DEPOSIT_coin_type','$DEPOSIT_address','$DEPOSIT_txid','$DEPOSIT_amount','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")) {
+								die("Server error");
+							} else {
+								$result = plusfunds($user_session,$Bitcrystald[$i]["prefix"],$DEPOSIT_amount);
+								if($result) {
+									$r_system_action = "success";
+								} else {
+									die("Server error");
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			$Bitcrystalxd_List_Transactions = $Bitcrystald[$i]["daemon"]->listtransactions($wallet_id,50);
+   
+			foreach($Bitcrystalxd_List_Transactions as $Bitcrystalxd_List_Transaction) {
+				if($Bitcrystalxd_List_Transaction['category']=="receive") {
+					if(6<=$Bitcrystalxd_List_Transaction['confirmations']) {
+						$DEPOSIT_tx_type = 'deposit';
+						$DEPOSIT_coin_type = $Bitcrystalxd[$i]["prefix"];
+						$DEPOSIT_date = date('n/j/y h:i a',$Bitcrystalxd_List_Transaction['time']);
+						$DEPOSIT_address = $Bitcrystalxd_List_Transaction['address'];
+						$DEPOSIT_amount = abs($Bitcrystalxd_List_Transaction['amount']);
+						$DEPOSIT_txid = $Bitcrystalxd_List_Transaction['txid'];
+						$SQL = "SELECT * FROM transactions WHERE coin='$DEPOSIT_coin_type' and txid='$DEPOSIT_txid' and trade_id = '".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."'";
+						$result = mysql_query($SQL);
+						$num_rows = mysql_num_rows($result);
+						if($num_rows!=1) {
+							if(!mysql_query("INSERT INTO transactions (id,date,username,action,coin,address,txid,amount,trade_id) VALUES ('','$DEPOSIT_date','$user_session','$DEPOSIT_tx_type','$DEPOSIT_coin_type','$DEPOSIT_address','$DEPOSIT_txid','$DEPOSIT_amount','".$my_coins->coins_names_prefix[0]."_".$my_coins->coins_names_prefix[1]."_".$my_coins->coins_names_prefix[2]."')")) {
+								die("Server error");
+							} else {
+								$result = plusfunds($user_session,$Bitcrystalxd[$i]["prefix"],$DEPOSIT_amount);
+								if($result) {
+									$r_system_action = "success";
+								} else {
+									die("Server error");
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			$Bitcoind_Balance[$i] = userbalance($user_session,$Bitcoind[$i]["prefix"]);      // Simple function to call the users balance
+			$Bitcrystald_Balance[$i] = userbalance($user_session,$Bitcrystald[$i]["prefix"]);
+			$Bitcrystalxd_Balance[$i] = userbalance($user_session,$Bitcrystalx[$i]["prefix"]);
+		}
+	
 	}
 	
 	public static function get()

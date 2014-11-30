@@ -12,8 +12,7 @@ if($Logged_In===7) {
 }
 $coin_selecter = security($_GET['c']);
 if($coin_selecter) {
-   if($coin_selecter==$my_coins->coins_names_prefix[0]) { $_SESSION['trade_coin'] = $my_coins->coins_names_prefix[0]; }
-   if($coin_selecter==$my_coins->coins_names_prefix[2]) { $_SESSION['trade_coin'] = $my_coins->coins_names_prefix[2]; }
+   $_SESSION['trade_coin'] = $my_coins->coinSelecter($coin_selecter);
    header("Location: index.php");
 }
 $Buying_Rate = buyrate($BTC,$BTCRYX);

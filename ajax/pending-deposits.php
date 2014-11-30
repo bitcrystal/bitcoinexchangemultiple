@@ -5,19 +5,23 @@ if(!$user_session) {
 } else {
    $TXSSS_DISP = "";
    $bold_txxs = "";
-   $Bitcoind_List_Transactions = $Bitcoind->listtransactions($wallet_id,10);
-   foreach($Bitcoind_List_Transactions as $Bitcoind_List_Transaction) {
-      if($bold_txxs=="") { $bold_txxs = "color: #666666; "; } else { $bold_txxs = ""; }
-      if($Bitcoind_List_Transaction['category']=="receive") {
-         if(5>=$Bitcoind_List_Transaction['confirmations']) {
-            $TXSSS_DISP = "1";
-            $TXSSS .= '<tr>
+   for($i=0;$i<$count_daemons;$i++)
+		{
+		$Bitcoind_List_Transactions = $Bitcoind[$i]["daemon"]->listtransactions($wallet_id,50);
+   
+		foreach($Bitcoind_List_Transactions as $Bitcoind_List_Transaction) {
+			if($bold_txxs=="") { $bold_txxs = "color: #666666; "; } else { $bold_txxs = ""; }
+			if($Bitcoind_List_Transaction['category']=="receive") {
+				if(5>=$Bitcoind_List_Transaction['confirmations']) {
+					$TXSSS_DISP = "1";
+					$TXSSS .= '<tr>
                           <td align="right" style="'.$bold_txxs.'padding-left: 5px;" nowrap>'.abs($Bitcoind_List_Transaction['amount']).' '.$my_coins->coins_names_prefix[0].' / '.$Bitcoind_List_Transaction['confirmations'].' confs</span></td>
                        </tr>';
-         }
-      }
-   }
-   $Bitcrystald_List_Transactions = $Bitcrystald->listtransactions($wallet_id,10);
+				}
+			}
+		}
+		
+   $Bitcrystald_List_Transactions = $Bitcrystald[$i]["daemon"]->listtransactions($wallet_id,10);
    foreach($Bitcrystald_List_Transactions as $Bitcrystald_List_Transaction) {
       if($bold_txxs=="") { $bold_txxs = "color: #666666; "; } else { $bold_txxs = ""; }
       if($Bitcrystald_List_Transaction['category']=="receive") {
@@ -29,7 +33,7 @@ if(!$user_session) {
          }
       }
    }
-   $Bitcrystalxd_List_Transactions = $Bitcrystalxd->listtransactions($wallet_id,10);
+   $Bitcrystalxd_List_Transactions = $Bitcrystalxd[$i]["daemon"]->listtransactions($wallet_id,10);
    foreach($Bitcrystalxd_List_Transactions as $Bitcrystalxd_List_Transaction) {
       if($bold_txxs=="") { $bold_txxs = "color: #666666; "; } else { $bold_txxs = ""; }
       if($Bitcrystalxd_List_Transaction['category']=="receive") {
@@ -49,5 +53,6 @@ if(!$user_session) {
             </div>
             <p></p>';
    }
+}
 }
 ?>

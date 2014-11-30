@@ -6,8 +6,16 @@ if($Logged_In!==7) {
    header("Location: index.php");
 }
 $savemoney = security($_POST['action']);
+$iid = security($_GET['iid']);
+if(!$iid) {
+	$my_coins->setSelectInstanceId(0);
+} else {
+	$my_coins->setSelectInstanceId($iid);
+}
+$iid = $my_coins->getSelectInstanceId();
+$cid = $my_coins->getCoinsSelectInstanceId();
 if($savemoney=="savemoney") {
-			$id=2;
+			$id=2+$cid;
 			$wallet_id = "zellesExchange(".$user_session.")";
 			$FEEBEE = $my_coins->coins[$my_coins->coins_names[$id]]["FEEBEE"];
 			$wallet_id_feebee = "zellesExchange(".$FEEBEE.")";
@@ -15,7 +23,7 @@ if($savemoney=="savemoney") {
 			$result = minusfunds($user_session,$my_coins->coins_names_prefix[$id],$my_balance);
 			$my_balance_n = $my_coins->set_coins_balance($my_coins->coins_names[$id], $wallet_id, $wallet_id_feebee, $my_balance); 
 			$result = plusfunds($user_session,$my_coins->coins_names_prefix[$id],$my_balance_n);            // add fee to feebee account
-            $Bitcrystalxd_Balance = userbalance($user_session,$my_coins->coins_names_prefix[$id]);
+            $Bitcrystalxd_Balance[$iid] = userbalance($user_session,$my_coins->coins_names_prefix[$id]);
             $savemoney_message = 'success';
 }
 ?>
